@@ -74,33 +74,38 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-base-200 p-6">
-      {/* Header */}
+      {/* Header with Action Buttons */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Hail Damage Claims Dashboard</h1>
-        <div className="text-sm breadcrumbs">
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li>Claims Dashboard</li>
-          </ul>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Hail Damage Claims Dashboard</h1>
+            <div className="text-sm breadcrumbs">
+              <ul>
+                <li><a href="/">Home</a></li>
+                <li>Claims Dashboard</li>
+              </ul>
+            </div>
+          </div>
+          
+          {/* Action Buttons moved to top */}
+          <div className="flex gap-4">
+            <a href="/claims" className="btn btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Pending
+            </a>
+            
+            <a href="/upload" className="btn btn-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-1V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2H5a2 2 0 00-2 2z" />
+              </svg>
+              New Claim
+            </a>
+          </div>
         </div>
       </div>
 
-      {/* Quick Actions Float */}
-      <div className="fixed bottom-8 right-8 flex flex-col gap-4">
-        <a href="/claims" className="btn btn-primary btn-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          New Claim
-        </a>
-        
-        <a href="/upload" className="btn btn-secondary btn-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-1V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2H5a2 2 0 00-2 2z" />
-          </svg>
-          Upload Photos
-        </a>
-      </div>
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="card bg-base-100 shadow-md">
@@ -136,22 +141,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Claims Pipeline Status */}
-      <div className="card bg-base-100 shadow-md mb-8">
-        <div className="card-body">
-          <h2 className="card-title mb-4">Claims Pipeline</h2>
-          <div className="flex flex-wrap gap-2">
-            {Object.values(ClaimStatus).map(status => (
-              <div key={status} className="stat place-items-center">
-                <div className="stat-title">{status}</div>
-                <div className="stat-value text-xl">
-                  {allClaims.filter(claim => claim.status === status).length}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* Pending Review Section */}
       <div className="card bg-base-100 shadow-md">
