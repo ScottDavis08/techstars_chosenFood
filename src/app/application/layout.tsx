@@ -1,9 +1,9 @@
-import Header from '@/components/header'
+import Sidebar from '@/components/navbar';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen">
-      <Header />
+      <Sidebar />
       <main>
         {children}
       </main>
