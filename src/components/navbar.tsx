@@ -1,4 +1,3 @@
-"use client"
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,11 +11,18 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    { href: '/application/application', label: 'Dashboard', icon: '📊' },
-    { href: '/application/claims', label: 'Products', icon: '📦' },
-    { href: '/application/upload', label: 'Orders', icon: '📋' },
-    //{ href: '/application/settings', label: 'Settings', icon: '⚙️' },
+    { href: '/', label: 'Dashboard', icon: '📊' },
+    { href: '/products', label: 'Products', icon: '📦' },
+    { href: '/orders', label: 'Orders', icon: '📋' },
+    { href: '/customers', label: 'Customers', icon: '👥' },
+    { href: '/analytics', label: 'Analytics', icon: '📈' },
+    { href: '/settings', label: 'Settings', icon: '⚙️' },
   ];
+
+  // Only render if router is ready
+  if (!router.isReady) {
+    return null;
+  }
 
   return (
     <>
