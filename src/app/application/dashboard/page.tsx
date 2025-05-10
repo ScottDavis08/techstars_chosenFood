@@ -89,14 +89,14 @@ const Dashboard: React.FC = () => {
           
           {/* Action Buttons moved to top */}
           <div className="flex gap-4">
-            <a href="/claims" className="btn btn-primary">
+            <a href="/application/claims" className="btn btn-primary">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               Pending
             </a>
             
-            <a href="/upload" className="btn btn-secondary">
+            <a href="/application/upload" className="btn btn-secondary">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-1V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2H5a2 2 0 00-2 2z" />
               </svg>

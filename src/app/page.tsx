@@ -36,10 +36,10 @@ const LandingPage: React.FC = () => {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium hover:underline underline-offset-4">
+            <Link href="/application/login" className="text-sm font-medium hover:underline underline-offset-4">
               Log in
             </Link>
-            <Link href="/dashboard" className="btn btn-primary">
+            <Link href="/application/dashboard" className="btn btn-primary">
               Get Started
             </Link>
           </div>
@@ -61,7 +61,7 @@ const LandingPage: React.FC = () => {
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Link href="/dashboard" className="btn btn-primary btn-lg px-8">
+                  <Link href="/application/dashboard" className="btn btn-primary btn-lg px-8">
                     Start Free Trial
                   </Link>
                   <button className="btn btn-outline btn-lg px-8">
