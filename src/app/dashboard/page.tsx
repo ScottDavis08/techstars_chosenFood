@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect } from 'react';
 import api from '@/api/hard_code_for build';
 import { HailDamageClaim, ClaimStatus, ClaimPriority } from '@/types';
@@ -84,6 +85,22 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Quick Actions Float */}
+      <div className="fixed bottom-8 right-8 flex flex-col gap-4">
+        <a href="/claims" className="btn btn-primary btn-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          New Claim
+        </a>
+        
+        <a href="/upload" className="btn btn-secondary btn-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-1V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2H5a2 2 0 00-2 2z" />
+          </svg>
+          Upload Photos
+        </a>
+      </div>
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="card bg-base-100 shadow-md">
@@ -232,22 +249,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick Actions Float */}
-      <div className="fixed bottom-8 right-8 flex flex-col gap-4">
-        <button className="btn btn-primary btn-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          New Claim
-        </button>
-        
-        <button className="btn btn-secondary btn-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-1V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2H5a2 2 0 00-2 2z" />
-          </svg>
-          Upload Photos
-        </button>
-      </div>
 
       {/* Modal for Selected Claim */}
       {selectedClaim && (

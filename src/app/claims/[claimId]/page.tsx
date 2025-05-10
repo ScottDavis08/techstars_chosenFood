@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect } from 'react';
 import api from '@/api/hard_code_for build';
 import { HailDamageClaim, Photo } from '@/types';
