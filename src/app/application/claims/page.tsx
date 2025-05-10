@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { Eye, Calendar, MapPin, AlertCircle, CheckCircle, XCircle, MoreHorizontal, ThumbsDown, ThumbsUp } from 'lucide-react';
-import api from '@/api/hard_code_for build';
+import api from '@/app/api/hard_code_for build';
 import { HailDamageClaim, Customer, ClaimStatus, ClaimPriority } from '@/types';
 import ImageCarousel from '@/components/image_carousel';
 
