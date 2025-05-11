@@ -61,8 +61,8 @@ const HomePicturesPage: React.FC<HomePicturesPageProps> = ({ claimId }) => {
       <div className="mb-6">
         <div className="breadcrumbs text-sm">
           <ul>
-            <li><a href="/">Dashboard</a></li>
-            <li><a href="/claims">Claims</a></li>
+            <li><a href="/application/">Dashboard</a></li>
+            <li><a href="/application/claims">Claims</a></li>
             <li>Claim {claim.claimNumber}</li>
           </ul>
         </div>

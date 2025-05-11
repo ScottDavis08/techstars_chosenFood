@@ -20,7 +20,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo/Brand */}
-          <Link href="/" className="text-xl font-bold text-primary">
+          <Link href="/application" className="text-xl font-bold text-primary">
             FrostByte
           </Link>
 
