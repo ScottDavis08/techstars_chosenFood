@@ -1,7 +1,8 @@
 // src/components/tabs/FileUploadsTab.tsx
 import React from 'react';
-import { Camera, Upload, Trash2, Plus, FileText, Image, Video } from 'lucide-react';
+import { Camera,  Trash2, Plus, FileText,  Video } from 'lucide-react';
 import { DocumentType } from '@/types';
+import Image from 'next/image';
 
 export interface UploadedFile {
     id: string;
@@ -59,8 +60,8 @@ export default function FileUploadsTab({ files, handleFileUpload, removeFile }: 
             {photos.map((photo) => (
               <div key={photo.id} className="relative">
                 <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                  <img 
-                    src={photo.preview} 
+                  <Image 
+                    src={photo.preview ||''} 
                     alt={photo.name}
                     className="w-full h-full object-cover"
                   />
@@ -75,12 +76,13 @@ export default function FileUploadsTab({ files, handleFileUpload, removeFile }: 
               </div>
             ))}
           </div>
-        ) : (
+        )
+         : (
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-            <Image className="w-12 h-12 mx-auto mb-2 text-gray-400" />
             <p className="text-gray-500">No photos uploaded</p>
           </div>
-        )}
+        )
+        }
       </div>
 
       {/* Videos Section */}

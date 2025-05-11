@@ -343,8 +343,8 @@ const LandingPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-muted-foreground">
-                  "I used to inspect 40 roofs per month. With FrostByte, I can process over 120 without the physical
-                  strain or safety concerns."
+                  &ldquo;I used to inspect 40 roofs per month. With FrostByte, I can process over 120 without the physical
+                  strain or safety concerns.&rdquo;
                 </p>
               </div>
               <div className="flex flex-col space-y-4 rounded-lg border p-6 shadow-sm">
@@ -358,8 +358,8 @@ const LandingPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-muted-foreground">
-                  "Winter used to mean a 60% drop in our inspection capacity. FrostByte has eliminated seasonal
-                  slowdowns completely."
+                  &ldquo;Winter used to mean a 60% drop in our inspection capacity. FrostByte has eliminated seasonal
+                  slowdowns completely.&rdquo;
                 </p>
               </div>
               <div className="flex flex-col space-y-4 rounded-lg border p-6 shadow-sm">
@@ -373,8 +373,8 @@ const LandingPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-muted-foreground">
-                  "Our claim approval rate has increased by 35% since implementing FrostByte, with faster payouts and
-                  higher customer satisfaction."
+                  &ldquo;Our claim approval rate has increased by 35% since implementing FrostByte, with faster payouts and
+                  higher customer satisfaction.&rdquo;
                 </p>
               </div>
             </div>

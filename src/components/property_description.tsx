@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import api from '@/app/api/hard_code_for build';
-import { HailDamageClaim, Photo } from '@/types';
+import { HailDamageClaim } from '@/types';
 
 
 // Description Component

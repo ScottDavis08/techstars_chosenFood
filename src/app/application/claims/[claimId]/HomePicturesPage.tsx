@@ -4,6 +4,7 @@ import api from '@/app/api/hard_code_for build';
 import { HailDamageClaim } from '@/types';
 import PropertyDescription from '@/components/property_description';
 import ImageCarousel from '@/components/image_carousel';
+import Link from 'next/link';
 
 // HomePicturesPage Component
 interface HomePicturesPageProps {
@@ -61,8 +62,8 @@ const HomePicturesPage: React.FC<HomePicturesPageProps> = ({ claimId }) => {
       <div className="mb-6">
         <div className="breadcrumbs text-sm">
           <ul>
-            <li><a href="/application/">Dashboard</a></li>
-            <li><a href="/application/claims">Claims</a></li>
+            <li><Link href="/application/">Dashboard</Link></li>
+            <li><Link href="/application/claims">Claims</Link></li>
             <li>Claim {claim.claimNumber}</li>
           </ul>
         </div>

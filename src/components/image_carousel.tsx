@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import api from '@/app/api/hard_code_for build';
-import { HailDamageClaim, Photo } from '@/types';
+import React, { useState } from 'react';
+import { Photo } from '@/types';
+import Image from 'next/image';
 
 // Image Carousel Component
 interface ImageCarouselProps {
@@ -45,7 +45,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos }) => {
               index === currentIndex ? 'block' : 'hidden'
             }`}
           >
-            <img
+            <Image
               src={photo.url}
               alt={photo.caption || `Photo ${index + 1}`}
               className="w-full h-full object-cover"
@@ -89,7 +89,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos }) => {
               index === currentIndex ? 'ring-2 ring-primary ring-offset-2' : 'opacity-60 hover:opacity-100'
             }`}
           >
-            <img
+            <Image
               src={photo.thumbnail || photo.url}
               alt={`Thumbnail ${index + 1}`}
               className="w-full h-full object-cover"

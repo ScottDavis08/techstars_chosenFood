@@ -54,7 +54,7 @@ const ClaimsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cardTransform, setCardTransform] = useState({ x: 0, y: 0, rotate: 0, opacity: 1 });
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging] = useState(false);
 
   useEffect(() => {
     const fetchClaims = async () => {

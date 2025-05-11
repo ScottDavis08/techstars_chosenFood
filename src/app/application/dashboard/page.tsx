@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '@/app/api/hard_code_for build';
 import { HailDamageClaim, ClaimStatus, ClaimPriority } from '@/types';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const Dashboard: React.FC = () => {
   const [allClaims, setAllClaims] = useState<HailDamageClaim[]>([]);
@@ -81,7 +83,7 @@ const Dashboard: React.FC = () => {
             <h1 className="text-3xl font-bold mb-2">Hail Damage Claims Dashboard</h1>
             <div className="text-sm breadcrumbs">
               <ul>
-                <li><a href="/">Home</a></li>
+                <li><Link href="/">Home</Link></li>
                 <li>Claims Dashboard</li>
               </ul>
             </div>
@@ -89,19 +91,19 @@ const Dashboard: React.FC = () => {
           
           {/* Action Buttons moved to top */}
           <div className="flex gap-4">
-            <a href="/application/claims" className="btn btn-primary">
+            <Link href="/application/claims" className="btn btn-primary">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               Pending
-            </a>
+            </Link>
             
-            <a href="/application/upload" className="btn btn-secondary">
+            <Link href="/application/upload" className="btn btn-secondary">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-1V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2H5a2 2 0 00-2 2z" />
               </svg>
               New Claim
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -220,12 +222,6 @@ const Dashboard: React.FC = () => {
                           </button>
                           <div className="dropdown dropdown-end">
                             <label tabIndex={0} className="btn btn-sm btn-ghost">⋮</label>
-                            <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                              <li><a>Assign Adjuster</a></li>
-                              <li><a>Update Status</a></li>
-                              <li><a>Add Photos</a></li>
-                              <li><a>Generate Report</a></li>
-                            </ul>
                           </div>
                         </div>
                       </td>
@@ -270,9 +266,9 @@ const Dashboard: React.FC = () => {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {selectedClaim.photos.map(photo => (
                   <div key={photo.id} className="relative">
-                    <img 
+                    <Image 
                       src={photo.url} 
-                      alt={photo.caption} 
+                      alt={photo.caption || ''}
                       className="w-full h-32 object-cover rounded"
                     />
                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 rounded-b">
