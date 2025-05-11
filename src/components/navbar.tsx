@@ -10,7 +10,7 @@ const Navbar = () => {
   };
 
   const menuItems = [
-    { href: '/application/application', label: 'Dashboard', icon: '📊' },
+    { href: '/application/dashboard', label: 'Dashboard', icon: '📊' },
     { href: '/application/claims', label: 'Claims', icon: '📦' },
     { href: '/application/upload', label: 'Upload', icon: '📋' },
   ];

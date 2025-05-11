@@ -168,13 +168,6 @@ const ClaimsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-base-200 py-8 px-4">
       <div className="max-w-md mx-auto">
-        {/* Header */}
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold">Claims Review</h1>
-          <p className="text-sm opacity-70 mt-1">
-            {currentClaimIndex + 1} of {claims.length} claims
-          </p>
-        </div>
 
         {/* Single Card */}
         <div 
