@@ -4,7 +4,7 @@ import { Eye, Calendar, MapPin, AlertCircle, CheckCircle, XCircle, MoreHorizonta
 import api from '@/app/api/hard_code_for build';
 import { HailDamageClaim, Customer, ClaimStatus, ClaimPriority } from '@/types';
 import ImageCarousel from '@/components/image_carousel';
-import { useRouter } from 'next/navigation';
+
 
 // Card stack data type
 interface ClaimCardData {
@@ -106,12 +106,7 @@ const ClaimsPage: React.FC = () => {
   const handleViewClaim = () => {
     const claimId = claims[currentClaimIndex]?.claim.id;
     if (claimId) {
-      // Option 1: Using Next.js router
-      const router = useRouter();
-      router.push(`/claims/${claimId}`);
-      
-      // OR Option 2: Using window.location (if you don't want to import router)
-      // window.location.href = `/claims/${claimId}`;
+      window.location.href = `/application/claims/${claimId}`;
     }
   };
   const handleApprove = () => {
@@ -250,8 +245,7 @@ const ClaimsPage: React.FC = () => {
           
           <button 
             onClick={handleViewClaim}
-            className="btn btn-circle btn-lg btn-primary"
-          >
+            className="btn btn-circle btn-lg btn-primary">
             <Eye className="h-7 w-7" />
           </button>
           

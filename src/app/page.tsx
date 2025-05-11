@@ -420,9 +420,6 @@ const LandingPage: React.FC = () => {
               Contact
             </Link>
           </nav>
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} FrostByte. All rights reserved.
-          </p>
         </div>
       </footer>
     </div>
