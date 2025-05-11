@@ -2,88 +2,118 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-const Sidebar = () => {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  
-  const toggleSidebar = () => {
+
+  const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-  
+
   const menuItems = [
     { href: '/application/application', label: 'Dashboard', icon: '📊' },
-    { href: '/application/claims', label: 'Products', icon: '📦' },
-    { href: '/application/upload', label: 'Orders', icon: '📋' },
+    { href: '/application/claims', label: 'Claims', icon: '📦' },
+    { href: '/application/upload', label: 'Upload', icon: '📋' },
   ];
-  
+
   return (
-    <>
-      {/* Hamburger menu button for mobile */}
-      <button
-        onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-50 btn btn-square btn-ghost"
-        aria-label="Toggle menu"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-6 h-6 stroke-current">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-      
-      {/* Overlay for mobile when sidebar is open */}
-      <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden transition-opacity duration-300 ${
-          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={toggleSidebar}
-      />
-      
-      {/* Sidebar */}
-      <div
-        className={`fixed top-0 left-0 h-screen bg-base-200 w-64 shadow-lg z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 lg:relative`}
-      >
-        {/* Logo/Brand */}
-        <div className="p-4 pb-0">
+    <header className="sticky top-0 z-50 w-full bg-base-200 shadow-lg">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo/Brand */}
           <Link href="/" className="text-xl font-bold text-primary">
-            YourApp
+            FrostByte
           </Link>
-        </div>
-        
-        {/* Navigation Menu */}
-        <div className="p-4">
-          <ul className="menu w-full">
+
+          {/* Desktop Navigation - Hidden on mobile */}
+          <nav className="hidden md:flex space-x-4">
             {menuItems.map((item) => (
-              <li key={item.href} className="mb-1">
-                <Link
-                  href={item.href}
-                  className="rounded-lg"
-                  onClick={() => setIsOpen(false)} // Close sidebar on mobile after clicking
-                >
-                  <span className="text-lg">{item.icon}</span>
-                  <span>{item.label}</span>
-                </Link>
-              </li>
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-base-300 transition-colors"
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span>{item.label}</span>
+              </Link>
             ))}
-          </ul>
-        </div>
-        
-        {/* User Profile Section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-base-300">
-          <div className="flex items-center gap-3">
+          </nav>
+
+          {/* User Profile - Desktop */}
+          <div className="hidden md:flex items-center gap-3">
             <div className="avatar">
               <div className="w-10 rounded-full bg-primary flex items-center justify-center">
                 <span className="text-primary-content font-bold">JD</span>
               </div>
             </div>
-            <div className="flex-1">
+            <div className="hidden lg:block">
               <p className="font-medium text-sm">John Doe</p>
               <p className="text-xs text-base-content/70">john@example.com</p>
             </div>
           </div>
+
+          {/* Hamburger menu button for mobile */}
+          <div className="relative md:hidden">
+            <button
+              onClick={toggleDropdown}
+              className="btn btn-square btn-ghost"
+              aria-label="Toggle menu"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                className="w-6 h-6 stroke-current"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth="2" 
+                  d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} 
+                />
+              </svg>
+            </button>
+
+            {/* Mobile Dropdown Menu */}
+            <div
+              className={`absolute right-0 top-full mt-2 w-64 bg-base-100 rounded-lg shadow-xl transition-all duration-300 origin-top-right ${
+                isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'
+              }`}
+            >
+              {/* User Profile - Mobile */}
+              <div className="p-4 border-b border-base-300">
+                <div className="flex items-center gap-3">
+                  <div className="avatar">
+                    <div className="w-10 rounded-full bg-primary flex items-center justify-center">
+                      <span className="text-primary-content font-bold">JD</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">John Doe</p>
+                    <p className="text-xs text-base-content/70">john@example.com</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation Menu - Mobile */}
+              <nav className="p-2">
+                {menuItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-base-200 transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
-    </>
+    </header>
   );
 };
 
-export default Sidebar;
+export default Navbar;

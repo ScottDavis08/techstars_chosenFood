@@ -2,14 +2,13 @@
 import { useState } from 'react';
 
 export default function PricingModal() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const plans = [
     {
       name: "Starter",
       price: "$9",
       period: "/month",
-      description: "Perfect for small teams",
       features: [
         "Up to 5 users",
         "10GB storage",
@@ -26,7 +25,6 @@ export default function PricingModal() {
       name: "Professional",
       price: "$29",
       period: "/month",
-      description: "Best for growing businesses",
       features: [
         "Up to 50 users",
         "100GB storage",
@@ -45,7 +43,6 @@ export default function PricingModal() {
       name: "Enterprise",
       price: "$99",
       period: "/month",
-      description: "For large organizations",
       features: [
         "Unlimited users",
         "Unlimited storage",
@@ -101,18 +98,19 @@ export default function PricingModal() {
                 
                 <div className="card-body">
                   <h3 className="card-title text-xl">{plan.name}</h3>
-                  <p className="text-sm opacity-70">{plan.description}</p>
                   
-                  <div className="my-4">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    <span className="text-base-content/60">{plan.period}</span>
+                  <div className="my-4 h-16 flex items-start justify-center">
+                    <div className="flex items-baseline">
+                    <span className="text-4xl font-bold w-20 text-right self-start">{plan.price}</span>
+                    <span className="text-base-content/60 ml-1">{plan.period}</span>
+                    </div>
                   </div>
                   
                   <ul className="space-y-2 flex-grow">
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-center">
                         <svg 
-                          className="w-4 h-4 text-success mr-2"
+                          className="w-4 h-4 text-success mr-2 flex-shrink-0"
                           fill="none" 
                           strokeLinecap="round" 
                           strokeLinejoin="round" 
