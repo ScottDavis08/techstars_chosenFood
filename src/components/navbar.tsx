@@ -1,29 +1,20 @@
+"use client"
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-
+  
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
-
+  
   const menuItems = [
-    { href: '/', label: 'Dashboard', icon: '📊' },
-    { href: '/products', label: 'Products', icon: '📦' },
-    { href: '/orders', label: 'Orders', icon: '📋' },
-    { href: '/customers', label: 'Customers', icon: '👥' },
-    { href: '/analytics', label: 'Analytics', icon: '📈' },
-    { href: '/settings', label: 'Settings', icon: '⚙️' },
+    { href: '/application/application', label: 'Dashboard', icon: '📊' },
+    { href: '/application/claims', label: 'Products', icon: '📦' },
+    { href: '/application/upload', label: 'Orders', icon: '📋' },
   ];
-
-  // Only render if router is ready
-  if (!router.isReady) {
-    return null;
-  }
-
+  
   return (
     <>
       {/* Hamburger menu button for mobile */}
@@ -36,7 +27,7 @@ const Sidebar = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
-
+      
       {/* Overlay for mobile when sidebar is open */}
       <div
         className={`fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden transition-opacity duration-300 ${
@@ -44,38 +35,38 @@ const Sidebar = () => {
         }`}
         onClick={toggleSidebar}
       />
-
+      
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-base-200 p-4 w-64 shadow-lg z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 h-screen bg-base-200 w-64 shadow-lg z-40 overflow-y-auto transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 lg:static lg:block`}
+        } lg:translate-x-0 lg:relative`}
       >
         {/* Logo/Brand */}
-        <div className="mb-8 mt-12 lg:mt-0">
+        <div className="p-4 pb-0">
           <Link href="/" className="text-xl font-bold text-primary">
             YourApp
           </Link>
         </div>
-
+        
         {/* Navigation Menu */}
-        <ul className="menu w-full">
-          {menuItems.map((item) => (
-            <li key={item.href} className="mb-1">
-              <Link
-                href={item.href}
-                className={`rounded-lg ${
-                  router.pathname === item.href ? 'active' : ''
-                }`}
-                onClick={() => setIsOpen(false)} // Close sidebar on mobile after clicking
-              >
-                <span className="text-lg">{item.icon}</span>
-                <span>{item.label}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-
+        <div className="p-4">
+          <ul className="menu w-full">
+            {menuItems.map((item) => (
+              <li key={item.href} className="mb-1">
+                <Link
+                  href={item.href}
+                  className="rounded-lg"
+                  onClick={() => setIsOpen(false)} // Close sidebar on mobile after clicking
+                >
+                  <span className="text-lg">{item.icon}</span>
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        
         {/* User Profile Section */}
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-base-300">
           <div className="flex items-center gap-3">

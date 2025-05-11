@@ -11,6 +11,7 @@ import {
   CloudSun,
   Users,
 } from "lucide-react"
+import PricingModal from '@/components/pricing_cards';
 
 const LandingPage: React.FC = () => {
   return (
@@ -19,7 +20,7 @@ const LandingPage: React.FC = () => {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">RoofClaim AI</span>
+            <span className="text-xl font-bold">FrostByte</span>
           </div>
           <nav className="hidden md:flex gap-6">
             <Link href="#features" className="text-sm font-medium hover:text-primary">
@@ -259,7 +260,7 @@ const LandingPage: React.FC = () => {
                 <div className="relative w-full max-w-[500px] aspect-video overflow-hidden rounded-xl shadow-2xl">
                   <Image
                     src="/placeholder.svg?height=500&width=800"
-                    alt="Insurance adjuster using tablet with RoofClaim AI"
+                    alt="Insurance adjuster using tablet with FrostByte"
                     width={800}
                     height={500}
                     className="object-cover"
@@ -268,7 +269,7 @@ const LandingPage: React.FC = () => {
               </div>
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Why Choose RoofClaim AI?</h2>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Why Choose FrostByte?</h2>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
                     Our platform delivers measurable improvements to your inspection process
                   </p>
@@ -326,7 +327,7 @@ const LandingPage: React.FC = () => {
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">What Our Users Say</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl">
-                  Insurance professionals are transforming their workflow with RoofClaim AI
+                  Insurance professionals are transforming their workflow with FrostByte
                 </p>
               </div>
             </div>
@@ -342,7 +343,7 @@ const LandingPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-muted-foreground">
-                  "I used to inspect 40 roofs per month. With RoofClaim AI, I can process over 120 without the physical
+                  "I used to inspect 40 roofs per month. With FrostByte, I can process over 120 without the physical
                   strain or safety concerns."
                 </p>
               </div>
@@ -357,7 +358,7 @@ const LandingPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-muted-foreground">
-                  "Winter used to mean a 60% drop in our inspection capacity. RoofClaim AI has eliminated seasonal
+                  "Winter used to mean a 60% drop in our inspection capacity. FrostByte has eliminated seasonal
                   slowdowns completely."
                 </p>
               </div>
@@ -372,14 +373,13 @@ const LandingPage: React.FC = () => {
                   </div>
                 </div>
                 <p className="text-muted-foreground">
-                  "Our claim approval rate has increased by 35% since implementing RoofClaim AI, with faster payouts and
+                  "Our claim approval rate has increased by 35% since implementing FrostByte, with faster payouts and
                   higher customer satisfaction."
                 </p>
               </div>
             </div>
           </div>
         </section>
-
         {/* CTA Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-primary text-primary-foreground">
           <div className="container px-4 md:px-6">
@@ -389,16 +389,14 @@ const LandingPage: React.FC = () => {
                   Ready to Transform Your Roof Inspection Process?
                 </h2>
                 <p className="max-w-[900px] md:text-xl">
-                  Join hundreds of insurance professionals already using RoofClaim AI
+                  Join hundreds of insurance professionals already using FrostByte
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Link href="/dashboard" className="btn btn-secondary btn-lg px-8">
                   Start Free Trial
                 </Link>
-                <button className="btn btn-outline btn-lg px-8 border-primary-foreground">
-                  Schedule Demo
-                </button>
+                  <PricingModal />
               </div>
               <p className="text-sm">No credit card required. 14-day free trial.</p>
             </div>
@@ -409,7 +407,7 @@ const LandingPage: React.FC = () => {
         <div className="container flex flex-col items-center justify-center gap-4 px-4 md:px-6 md:flex-row md:justify-between">
           <div className="flex items-center gap-2">
             <Shield className="h-6 w-6 text-primary" />
-            <span className="text-lg font-bold">RoofClaim AI</span>
+            <span className="text-lg font-bold">FrostByte</span>
           </div>
           <nav className="flex gap-4 sm:gap-6">
             <Link href="#" className="text-sm font-medium hover:underline underline-offset-4">
@@ -423,7 +421,7 @@ const LandingPage: React.FC = () => {
             </Link>
           </nav>
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} RoofClaim AI. All rights reserved.
+            © {new Date().getFullYear()} FrostByte. All rights reserved.
           </p>
         </div>
       </footer>
