@@ -6,9 +6,6 @@ import {
     ClaimPriority,
     PropertyType,
     RoofingMaterial,
-    DamageSeverity,
-    DamageType,
-    RoofArea,
     Customer,
     ApiResponse
   } from '@/types/types';

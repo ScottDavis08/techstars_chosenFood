@@ -5,13 +5,17 @@ import { HailDamageClaim } from '@/types';
 import PropertyDescription from '@/components/property_description';
 import ImageCarousel from '@/components/image_carousel';
 import Link from 'next/link';
+import { use } from 'react';
 
-// HomePicturesPage Component
-interface HomePicturesPageProps {
-  claimId: string;
+// Page Component for Next.js App Router
+interface PageProps {
+  params: Promise<{ claimId: string }>;
 }
 
-const HomePicturesPage: React.FC<HomePicturesPageProps> = ({ claimId }) => {
+const Page: React.FC<PageProps> = ({ params }) => {
+  // Use React's use() hook to unwrap the Promise in client components
+  const { claimId } = use(params);
+  
   const [claim, setClaim] = useState<HailDamageClaim | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +29,7 @@ const HomePicturesPage: React.FC<HomePicturesPageProps> = ({ claimId }) => {
         } else {
           setError(response.error?.message || 'Failed to load claim');
         }
-      } catch (error) {
+      } catch {
         setError('Error loading claim data');
       } finally {
         setLoading(false);
@@ -105,4 +109,4 @@ const HomePicturesPage: React.FC<HomePicturesPageProps> = ({ claimId }) => {
   );
 };
 
-export default HomePicturesPage;
+export default Page;

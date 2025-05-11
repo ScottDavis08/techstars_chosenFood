@@ -57,13 +57,16 @@ export function useFormData() {
   const handleCustomerChange = (field: string, value: string): void => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.');
-      setCustomer(prev => ({
-        ...prev,
-        [parent]: {
-          ...(prev[parent as keyof typeof prev] as Record<string, any>),
-          [child]: value
-        }
-      }));
+      if (parent === 'address') {
+        setCustomer(prev => ({
+          ...prev,
+          address: {
+            ...prev.address,
+            [child]: value
+          }
+        }));
+      }
+      // Add other specific parent handlers here if needed
     } else {
       setCustomer(prev => ({
         ...prev,
@@ -75,13 +78,16 @@ export function useFormData() {
   const handleClaimChange = (field: string, value: string): void => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.');
-      setClaim(prev => ({
-        ...prev,
-        [parent]: {
-          ...(prev[parent as keyof ClaimFormState] as any),
-          [child]: value
-        }
-      }));
+      if (parent === 'property') {
+        setClaim(prev => ({
+          ...prev,
+          property: {
+            ...prev.property,
+            [child]: value
+          }
+        }));
+      }
+      // Add other specific parent handlers here if needed
     } else {
       setClaim(prev => ({
         ...prev,

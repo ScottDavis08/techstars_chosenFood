@@ -270,7 +270,7 @@ export interface Customer {
   export interface ApiError {
     code: string;
     message: string;
-    details?: Record<string, any>;
+    details?: Record<string,string>;
   }
   
   export interface Pagination {
