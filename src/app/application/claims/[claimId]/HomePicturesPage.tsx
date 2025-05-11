@@ -25,7 +25,7 @@ const HomePicturesPage: React.FC<HomePicturesPageProps> = ({ claimId }) => {
         } else {
           setError(response.error?.message || 'Failed to load claim');
         }
-      } catch (err) {
+      } catch (error) {
         setError('Error loading claim data');
       } finally {
         setLoading(false);
