@@ -66,25 +66,27 @@ export function SwipeInterface({ recipes, onRecipeLiked }: SwipeInterfaceProps) 
 
   if (filteredRecipes.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[600px] text-center p-8">
-        <div className="text-6xl mb-4">🔍</div>
-        <h3 className="text-2xl font-bold mb-2">No recipes found</h3>
-        <p className="text-muted-foreground mb-4">
-          Try adjusting the tolerance level to see more options
-        </p>
-        <div className="w-full max-w-xs">
-          <label className="text-sm font-medium mb-2 block">
-            Match Tolerance: {tolerance}%
-          </label>
+        <div className="flex flex-col items-center w-full max-w-2xl mx-auto p-4">
+        <div className="w-full mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-sm font-medium">
+              Match Tolerance: {tolerance}%
+            </label>
+            <span className="text-sm text-muted-foreground">
+              {remainingCount} recipe{remainingCount !== 1 ? 's' : ''} remaining
+            </span>
+          </div>
           <Slider
             value={[tolerance]}
             onValueChange={(value) => setTolerance(value[0])}
             min={0}
             max={100}
             step={5}
-            className="mb-4"
           />
         </div>
+        <p className="text-muted-foreground mb-4">
+          Increase match score for more recipes
+        </p>
       </div>
     );
   }
@@ -141,19 +143,17 @@ export function SwipeInterface({ recipes, onRecipeLiked }: SwipeInterfaceProps) 
 
       <div className="flex gap-4">
         <Button
-          size="lg"
           variant="outline"
           onClick={() => handleButtonSwipe('left')}
-          className="h-16 w-16 rounded-full"
+          className="h-16 w-16 rounded-full p-0"
         >
           <X className="h-8 w-8 text-red-500" />
         </Button>
         <Button
-          size="lg"
           onClick={() => handleButtonSwipe('right')}
-          className="h-16 w-16 rounded-full bg-green-500 hover:bg-green-600"
+          className="h-16 w-16 rounded-full p-0 bg-green-500 hover:bg-green-600 text-white"
         >
-          <Heart className="h-8 w-8 text-white" />
+          <Heart className="h-8 w-8 fill-current" />
         </Button>
       </div>
     </div>
