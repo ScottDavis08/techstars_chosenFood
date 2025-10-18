@@ -4,7 +4,7 @@ import HomePicturesPage from './HomePicturesPage';
 // This is the page.tsx for the [claimId] dynamic route
 interface PageProps {
   params: Promise<{
-    claimId: string;
+    recipeId: string;
   }>;
 }
 export default async function ClaimDetailPage({ params }: PageProps) {

@@ -1,71 +1,99 @@
-// src/components/CustomerClaimForm.tsx
 "use client"
 
 import React, { useState } from 'react';
-import CustomerInformationTab from './customer_information_tab';
-import ClaimDetailsTab from './claim_details_tab';
-import FileUploadsTab from './file_uploads_tab';
+import RecipeDetailsTab from './recipe_details_tab';
+import IngredientsDirectionsTab from './ingredients_directions_tab';
+import RecipeImageTab from './recipe_image_tab';
 import { useFormData } from './useFormData';
 
-export default function CustomerClaimForm() {
-  const [activeTab, setActiveTab] = useState<'customer' | 'claim' | 'uploads'>('customer');
-  const { customer, claim, files, handleCustomerChange, handleClaimChange, handleFileUpload, removeFile, handleSubmit } = useFormData();
+export default function RecipeUploadForm() {
+  const [activeTab, setActiveTab] = useState<'details' | 'ingredients' | 'image'>('details');
+  const { 
+    recipe, 
+    ingredients,
+    directions,
+    image,
+    handleRecipeChange, 
+    toggleCategory,
+    toggleDietaryTag,
+    handleIngredientChange,
+    addIngredient,
+    removeIngredient,
+    handleDirectionChange,
+    addDirection,
+    removeDirection,
+    handleImageUpload,
+    removeImage,
+    updateTotalTime,
+    handleSubmit 
+  } = useFormData();
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
-          <h2 className="card-title text-2xl mb-6">Customer & Claim Setup</h2>
+          <h2 className="card-title text-2xl mb-6">Add New Recipe</h2>
           
           {/* Tabs */}
           <div className="tabs tabs-boxed mb-6 w-full">
             <a 
-              className={`tab tab-lg flex-1 ${activeTab === 'customer' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('customer')}
+              className={`tab tab-lg flex-1 ${activeTab === 'details' ? 'tab-active' : ''}`}
+              onClick={() => setActiveTab('details')}
             >
-              Customer Information
+              Recipe Details
             </a>
             <a 
-              className={`tab tab-lg flex-1 ${activeTab === 'claim' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('claim')}
+              className={`tab tab-lg flex-1 ${activeTab === 'ingredients' ? 'tab-active' : ''}`}
+              onClick={() => setActiveTab('ingredients')}
             >
-              Claim Details
+              Ingredients & Directions
             </a>
             <a 
-              className={`tab tab-lg flex-1 ${activeTab === 'uploads' ? 'tab-active' : ''}`}
-              onClick={() => setActiveTab('uploads')}
+              className={`tab tab-lg flex-1 ${activeTab === 'image' ? 'tab-active' : ''}`}
+              onClick={() => setActiveTab('image')}
             >
-              File Uploads
+              Recipe Image
             </a>
           </div>
 
           {/* Tab Content */}
-          {activeTab === 'customer' && (
-            <CustomerInformationTab 
-              customer={customer}
-              handleCustomerChange={handleCustomerChange}
+          {activeTab === 'details' && (
+            <RecipeDetailsTab 
+              recipe={recipe}
+              handleRecipeChange={handleRecipeChange}
+              toggleCategory={toggleCategory}
+              toggleDietaryTag={toggleDietaryTag}
+              updateTotalTime={updateTotalTime}
             />
           )}
 
-          {activeTab === 'claim' && (
-            <ClaimDetailsTab 
-              claim={claim}
-              handleClaimChange={handleClaimChange}
+          {activeTab === 'ingredients' && (
+            <IngredientsDirectionsTab 
+              ingredients={ingredients}
+              directions={directions}
+              handleIngredientChange={handleIngredientChange}
+              addIngredient={addIngredient}
+              removeIngredient={removeIngredient}
+              handleDirectionChange={handleDirectionChange}
+              addDirection={addDirection}
+              removeDirection={removeDirection}
             />
           )}
 
-          {activeTab === 'uploads' && (
-            <FileUploadsTab 
-              files={files}
-              handleFileUpload={handleFileUpload}
-              removeFile={removeFile}
+          {activeTab === 'image' && (
+            <RecipeImageTab 
+              image={image}
+              handleImageUpload={handleImageUpload}
+              removeImage={removeImage}
             />
           )}
           
           {/* Form Actions */}
           <div className="card-actions justify-end mt-8">
             <button className="btn btn-outline">Cancel</button>
-            <button className="btn btn-primary" onClick={handleSubmit}>Submit Claim</button>
+            <button className="btn btn-primary" onClick={handleSubmit}>
+              Save Recipe
+            </button>
           </div>
         </div>
       </div>

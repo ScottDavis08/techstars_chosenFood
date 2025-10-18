@@ -1,31 +1,46 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import api from '@/app/api/hard_code_for build';
-import { HailDamageClaim, ClaimStatus, ClaimPriority } from '@/types';
+import { Recipe, RecipeCategory, Client } from '@/types';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ChefHat, Users, BookOpen, Clock } from 'lucide-react';
+
+// Mock API - replace with actual API calls
+const mockApi = {
+  getRecipes: async () => ({
+    success: true,
+    data: [] as Recipe[]
+  }),
+  getClients: async () => ({
+    success: true,
+    data: [] as Client[]
+  })
+};
 
 const Dashboard: React.FC = () => {
-  const [allClaims, setAllClaims] = useState<HailDamageClaim[]>([]);
-  const [pendingClaims, setPendingClaims] = useState<HailDamageClaim[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
-  const [selectedClaim, setSelectedClaim] = useState<HailDamageClaim | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [filterCategory, setFilterCategory] = useState<RecipeCategory | 'ALL'>('ALL');
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await api.getClaims();
-        if (response.success && response.data) {
-          setAllClaims(response.data);
-          const pending = response.data.filter(claim => 
-            claim.status === ClaimStatus.PENDING || 
-            claim.status === ClaimStatus.UNDER_REVIEW
-          );
-          setPendingClaims(pending);
+        const [recipesResponse, clientsResponse] = await Promise.all([
+          mockApi.getRecipes(),
+          mockApi.getClients()
+        ]);
+        
+        if (recipesResponse.success && recipesResponse.data) {
+          setRecipes(recipesResponse.data);
+        }
+        if (clientsResponse.success && clientsResponse.data) {
+          setClients(clientsResponse.data);
         }
       } catch (error) {
-        console.error('Failed to load claims:', error);
+        console.error('Failed to load data:', error);
       } finally {
         setLoading(false);
       }
@@ -34,36 +49,23 @@ const Dashboard: React.FC = () => {
     loadData();
   }, []);
 
-  // Filter claims based on search term
-  const filteredClaims = pendingClaims.filter(claim =>
-    claim.claimNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    claim.property.address.street.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    claim.property.address.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    claim.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter recipes based on search term and category
+  const filteredRecipes = recipes.filter(recipe => {
+    const matchesSearch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      recipe.ingredients.some(ing => ing.ingredientName.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesCategory = filterCategory === 'ALL' || 
+      recipe.category?.includes(filterCategory);
+    
+    return matchesSearch && matchesCategory;
+  });
 
-  // Get status badge color
-  const getStatusBadgeColor = (status: ClaimStatus) => {
-    switch (status) {
-      case ClaimStatus.PENDING: return 'badge-warning';
-      case ClaimStatus.UNDER_REVIEW: return 'badge-info';
-      case ClaimStatus.APPROVED: return 'badge-success';
-      case ClaimStatus.DENIED: return 'badge-error';
-      case ClaimStatus.PAID: return 'badge-primary';
-      case ClaimStatus.CLOSED: return 'badge-neutral';
-      default: return 'badge-ghost';
-    }
-  };
-
-  // Get priority badge color
-  const getPriorityBadgeColor = (priority: ClaimPriority) => {
-    switch (priority) {
-      case ClaimPriority.LOW: return 'badge-ghost';
-      case ClaimPriority.MEDIUM: return 'badge-warning';
-      case ClaimPriority.HIGH: return 'badge-error';
-      case ClaimPriority.URGENT: return 'badge-error badge-lg';
-      default: return 'badge-ghost';
-    }
+  const formatTime = (minutes: number | undefined) => {
+    if (!minutes) return 'N/A';
+    if (minutes < 60) return `${minutes}m`;
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
   };
 
   if (loading) {
@@ -80,29 +82,27 @@ const Dashboard: React.FC = () => {
       <div className="mb-8">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Hail Damage Claims Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-2">Recipe Management Dashboard</h1>
             <div className="text-sm breadcrumbs">
               <ul>
                 <li><Link href="/">Home</Link></li>
-                <li>Claims Dashboard</li>
+                <li>Dashboard</li>
               </ul>
             </div>
           </div>
           
-          {/* Action Buttons moved to top */}
+          {/* Action Buttons */}
           <div className="flex gap-4">
-            <Link href="/application/claims" className="btn btn-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              Pending
+            <Link href="/application/recipes" className="btn btn-primary">
+              <ChefHat className="h-5 w-5" />
+              Browse Recipes
             </Link>
             
             <Link href="/application/upload" className="btn btn-secondary">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-1V5a2 2 0 00-2-2H8a2 2 0 00-2 2v2H5a2 2 0 00-2 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              New Claim
+              Add Recipe
             </Link>
           </div>
         </div>
@@ -112,180 +112,208 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="card bg-base-100 shadow-md">
           <div className="card-body">
-            <h2 className="card-title text-base">Total Claims</h2>
-            <div className="stat-value text-3xl">{allClaims.length}</div>
-            <div className="text-sm text-base-content opacity-70">All time</div>
+            <h2 className="card-title text-base flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              Total Recipes
+            </h2>
+            <div className="stat-value text-3xl">{recipes.length}</div>
+            <div className="text-sm text-base-content opacity-70">In database</div>
           </div>
         </div>
         
         <div className="card bg-base-100 shadow-md">
           <div className="card-body">
-            <h2 className="card-title text-base">Pending Review</h2>
-            <div className="stat-value text-3xl text-warning">{pendingClaims.length}</div>
-            <div className="text-sm text-base-content opacity-70">Needs attention</div>
+            <h2 className="card-title text-base flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Active Clients
+            </h2>
+            <div className="stat-value text-3xl text-success">{clients.length}</div>
+            <div className="text-sm text-base-content opacity-70">Registered</div>
           </div>
         </div>
 
         <div className="card bg-base-100 shadow-md">
           <div className="card-body">
-            <h2 className="card-title text-base">Avg. Processing Time</h2>
-            <div className="stat-value text-3xl">3.2</div>
-            <div className="text-sm text-base-content opacity-70">Days</div>
+            <h2 className="card-title text-base flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Avg. Prep Time
+            </h2>
+            <div className="stat-value text-3xl">
+              {recipes.length > 0 
+                ? Math.round(recipes.reduce((sum, r) => sum + (r.prepTime || 0), 0) / recipes.length)
+                : 0}m
+            </div>
+            <div className="text-sm text-base-content opacity-70">Minutes</div>
           </div>
         </div>
 
         <div className="card bg-base-100 shadow-md">
           <div className="card-body">
-            <h2 className="card-title text-base">Total Claim Value</h2>
-            <div className="stat-value text-3xl">$127K</div>
-            <div className="text-sm text-base-content opacity-70">This month</div>
+            <h2 className="card-title text-base">Categories</h2>
+            <div className="stat-value text-3xl">{Object.keys(RecipeCategory).length}</div>
+            <div className="text-sm text-base-content opacity-70">Available</div>
           </div>
         </div>
       </div>
 
-
-      {/* Pending Review Section */}
+      {/* Recipe Browser Section */}
       <div className="card bg-base-100 shadow-md">
         <div className="card-body">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="card-title">Pending Reviews</h2>
-            <div className="form-control w-full max-w-xs">
-              <input
-                type="text"
-                placeholder="Search claims..."
-                className="input input-bordered w-full"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+            <h2 className="card-title">Recipe Library</h2>
+            
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+              {/* Category Filter */}
+              <select 
+                className="select select-bordered select-sm"
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value as RecipeCategory | 'ALL')}
+              >
+                <option value="ALL">All Categories</option>
+                {Object.values(RecipeCategory).map(cat => (
+                  <option key={cat} value={cat}>
+                    {cat.replace(/_/g, ' ')}
+                  </option>
+                ))}
+              </select>
+              
+              {/* Search */}
+              <div className="form-control w-full sm:w-64">
+                <input
+                  type="text"
+                  placeholder="Search recipes..."
+                  className="input input-bordered input-sm w-full"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
-          {filteredClaims.length === 0 ? (
+          {filteredRecipes.length === 0 ? (
             <div className="text-center py-8 text-base-content opacity-70">
-              No pending claims found
+              <ChefHat className="h-16 w-16 mx-auto mb-4 opacity-50" />
+              <p>No recipes found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="table table-zebra w-full">
-                <thead>
-                  <tr>
-                    <th>Claim #</th>
-                    <th>Customer</th>
-                    <th>Address</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                    <th>Est. Cost</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredClaims.map(claim => (
-                    <tr key={claim.id} className="hover">
-                      <td>
-                        <div className="font-medium">{claim.claimNumber}</div>
-                      </td>
-                      <td>
-                        <div className="font-medium">{claim.customerId}</div>
-                      </td>
-                      <td>
-                        <div className="text-sm">
-                          {claim.property.address.street}<br />
-                          {claim.property.address.city}, {claim.property.address.state}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="text-sm">{claim.dateOfLoss}</div>
-                      </td>
-                      <td>
-                        <span className={`badge ${getStatusBadgeColor(claim.status)}`}>
-                          {claim.status}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredRecipes.map(recipe => (
+                <div 
+                  key={recipe.id} 
+                  className="card bg-base-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => setSelectedRecipe(recipe)}
+                >
+                  {recipe.image && (
+                    <figure className="h-48">
+                      <Image
+                        src={recipe.image.url}
+                        alt={recipe.title}
+                        className="w-full h-full object-cover"
+                        width={400}
+                        height={200}
+                      />
+                    </figure>
+                  )}
+                  <div className="card-body p-4">
+                    <h3 className="card-title text-base">{recipe.title}</h3>
+                    
+                    <div className="flex flex-wrap gap-1 my-2">
+                      {recipe.category?.slice(0, 2).map(cat => (
+                        <span key={cat} className="badge badge-primary badge-xs">
+                          {cat.replace(/_/g, ' ')}
                         </span>
-                      </td>
-                      <td>
-                        <span className={`badge ${getPriorityBadgeColor(claim.priority)}`}>
-                          {claim.priority}
+                      ))}
+                      {recipe.dietaryTags?.slice(0, 2).map(tag => (
+                        <span key={tag} className="badge badge-success badge-xs">
+                          {tag.replace(/_/g, ' ')}
                         </span>
-                      </td>
-                      <td>
-                        <div className="font-medium">
-                          ${claim.estimatedCost?.toLocaleString() || '—'}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="flex gap-2">
-                          <button 
-                            className="btn btn-sm btn-primary"
-                            onClick={() => setSelectedClaim(claim)}
-                          >
-                            View
-                          </button>
-                          <div className="dropdown dropdown-end">
-                            <label tabIndex={0} className="btn btn-sm btn-ghost">⋮</label>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      ))}
+                    </div>
+                    
+                    <div className="flex justify-between text-xs opacity-70">
+                      <span>⏱️ {formatTime(recipe.totalTime)}</span>
+                      <span>🍽️ {recipe.servings || 'N/A'} servings</span>
+                      {recipe.rating && <span>⭐ {recipe.rating.toFixed(1)}</span>}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
       </div>
 
-
-      {/* Modal for Selected Claim */}
-      {selectedClaim && (
+      {/* Modal for Selected Recipe */}
+      {selectedRecipe && (
         <div className="modal modal-open">
           <div className="modal-box max-w-4xl">
-            <h3 className="font-bold text-lg mb-4">Claim Details - {selectedClaim.claimNumber}</h3>
+            <h3 className="font-bold text-lg mb-4">{selectedRecipe.title}</h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            {selectedRecipe.image && (
+              <figure className="mb-4">
+                <Image
+                  src={selectedRecipe.image.url}
+                  alt={selectedRecipe.title}
+                  className="w-full h-64 object-cover rounded-lg"
+                  width={800}
+                  height={256}
+                />
+              </figure>
+            )}
+            
+            <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <h4 className="font-semibold mb-2">Property Info</h4>
-                <p className="text-sm">{selectedClaim.property.address.street}</p>
-                <p className="text-sm">{selectedClaim.property.address.city}, {selectedClaim.property.address.state}</p>
-                <p className="text-sm mt-2">{selectedClaim.property.propertyType} - {selectedClaim.property.roofingMaterial}</p>
+                <h4 className="font-semibold mb-2">Details</h4>
+                <p className="text-sm">Servings: {selectedRecipe.servings || 'N/A'}</p>
+                <p className="text-sm">Prep: {formatTime(selectedRecipe.prepTime)}</p>
+                <p className="text-sm">Cook: {formatTime(selectedRecipe.cookTime)}</p>
+                <p className="text-sm">Total: {formatTime(selectedRecipe.totalTime)}</p>
               </div>
               <div>
-                <h4 className="font-semibold mb-2">Claim Info</h4>
-                <p className="text-sm">Status: <span className={`badge ${getStatusBadgeColor(selectedClaim.status)}`}>{selectedClaim.status}</span></p>
-                <p className="text-sm">Priority: <span className={`badge ${getPriorityBadgeColor(selectedClaim.priority)}`}>{selectedClaim.priority}</span></p>
-                <p className="text-sm">Date of Loss: {selectedClaim.dateOfLoss}</p>
+                <h4 className="font-semibold mb-2">Tags</h4>
+                <div className="flex flex-wrap gap-1">
+                  {selectedRecipe.category?.map(cat => (
+                    <span key={cat} className="badge badge-sm badge-primary">
+                      {cat.replace(/_/g, ' ')}
+                    </span>
+                  ))}
+                  {selectedRecipe.dietaryTags?.map(tag => (
+                    <span key={tag} className="badge badge-sm badge-success">
+                      {tag.replace(/_/g, ' ')}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
             <div className="mb-4">
-              <h4 className="font-semibold mb-2">Description</h4>
-              <p className="text-sm">{selectedClaim.description}</p>
-            </div>
-
-            <div className="mb-6">
-              <h4 className="font-semibold mb-2">Photos</h4>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {selectedClaim.photos.map(photo => (
-                  <div key={photo.id} className="relative">
-                    <Image 
-                      src={photo.url} 
-                      alt={photo.caption || ''}
-                      className="w-full h-32 object-cover rounded"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 rounded-b">
-                      {photo.caption}
-                    </div>
-                  </div>
+              <h4 className="font-semibold mb-2">Ingredients ({selectedRecipe.ingredients.length})</h4>
+              <ul className="text-sm list-disc list-inside">
+                {selectedRecipe.ingredients.slice(0, 8).map(ing => (
+                  <li key={ing.id}>
+                    {ing.quantity && `${ing.quantity} `}
+                    {ing.unit && `${ing.unit} `}
+                    {ing.ingredientName}
+                  </li>
                 ))}
-              </div>
+                {selectedRecipe.ingredients.length > 8 && (
+                  <li className="opacity-70">... and {selectedRecipe.ingredients.length - 8} more</li>
+                )}
+              </ul>
             </div>
 
             <div className="modal-action">
-              <button className="btn" onClick={() => setSelectedClaim(null)}>Close</button>
-              <button className="btn btn-primary">Update Status</button>
+              <button className="btn" onClick={() => setSelectedRecipe(null)}>Close</button>
+              <Link 
+                href={`/application/recipes/${selectedRecipe.id}`}
+                className="btn btn-primary"
+              >
+                View Full Recipe
+              </Link>
             </div>
           </div>
           <form method="dialog" className="modal-backdrop">
-            <button onClick={() => setSelectedClaim(null)}>close</button>
+            <button onClick={() => setSelectedRecipe(null)}>close</button>
           </form>
         </div>
       )}
