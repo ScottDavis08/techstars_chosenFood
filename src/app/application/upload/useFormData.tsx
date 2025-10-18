@@ -1,240 +1,221 @@
-// src/components/hooks/useFormData.ts
 import { useState } from 'react';
 import {
-  ClaimPriority,
-  PropertyType,
-  RoofingMaterial,
-  DocumentType,
-  CreateClaimInput,
-  CreateCustomerInput,
-  Property
+  RecipeCategory,
+  DietaryTag,
+  CreateRecipeInput,
+  RecipeIngredient
 } from '@/types';
-import {  ClaimFormState} from './claim_details_tab';
-import { UploadedFile } from './file_uploads_tab';
-import {CustomerFormState} from './customer_information_tab';
+
+export interface RecipeFormState {
+  title: string;
+  servings: string;
+  prepTime: string;
+  cookTime: string;
+  totalTime: string;
+  description: string;
+  category: RecipeCategory[];
+  dietaryTags: DietaryTag[];
+  link: string;
+}
+
+export interface IngredientFormState {
+  ingredientName: string;
+  quantity: string;
+  unit: string;
+  preparation: string;
+  notes: string;
+}
+
+export interface UploadedFile {
+  id: string;
+  file: File;
+  name: string;
+  size: number;
+  preview: string;
+}
 
 export function useFormData() {
-  // Customer form state
-  const [customer, setCustomer] = useState<CustomerFormState>({
-    name: '',
-    email: '',
-    phone: '',
-    address: {
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      country: 'USA'
-    },
-    policyNumber: '',
-    insuranceCompany: ''
-  });
-
-  // Claim form state
-  const [claim, setClaim] = useState<ClaimFormState>({
-    claimNumber: '',
-    dateOfLoss: '',
-    dateReported: new Date().toISOString().split('T')[0],
+  const [recipe, setRecipe] = useState<RecipeFormState>({
+    title: '',
+    servings: '',
+    prepTime: '',
+    cookTime: '',
+    totalTime: '',
     description: '',
-    priority: ClaimPriority.MEDIUM,
-    property: {
-      propertyType: PropertyType.SINGLE_FAMILY,
-      yearBuilt: '',
-      roofingMaterial: RoofingMaterial.ASPHALT_SHINGLE,
-      roofAge: '',
-      roofArea: '',
-      stories: '1',
-      lastInspectionDate: ''
-    }
+    category: [],
+    dietaryTags: [],
+    link: ''
   });
 
-  // File upload states
-  const [photos, setPhotos] = useState<UploadedFile[]>([]);
-  const [videos, setVideos] = useState<UploadedFile[]>([]);
-  const [documents, setDocuments] = useState<UploadedFile[]>([]);
+  const [ingredients, setIngredients] = useState<IngredientFormState[]>([
+    { ingredientName: '', quantity: '', unit: '', preparation: '', notes: '' }
+  ]);
 
-  // Handlers
-  const handleCustomerChange = (field: string, value: string): void => {
-    if (field.includes('.')) {
-      const [parent, child] = field.split('.');
-      if (parent === 'address') {
-        setCustomer(prev => ({
-          ...prev,
-          address: {
-            ...prev.address,
-            [child]: value
-          }
-        }));
-      }
-      // Add other specific parent handlers here if needed
-    } else {
-      setCustomer(prev => ({
-        ...prev,
-        [field]: value
-      }));
-    }
-  };
+  const [directions, setDirections] = useState<string[]>(['']);
+  
+  const [image, setImage] = useState<UploadedFile | null>(null);
 
-  const handleClaimChange = (field: string, value: string): void => {
-    if (field.includes('.')) {
-      const [parent, child] = field.split('.');
-      if (parent === 'property') {
-        setClaim(prev => ({
-          ...prev,
-          property: {
-            ...prev.property,
-            [child]: value
-          }
-        }));
-      }
-      // Add other specific parent handlers here if needed
-    } else {
-      setClaim(prev => ({
-        ...prev,
-        [field]: value
-      }));
-    }
-  };
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, type: 'photos' | 'videos' | 'documents'): void => {
-    const files = Array.from(event.target.files || []);
-    const processedFiles: UploadedFile[] = files.map(file => ({
-      id: Math.random().toString(36).substr(2, 9),
-      file,
-      name: file.name,
-      size: file.size,
-      type: type,
-      documentType: type === 'documents' ? DocumentType.OTHER : undefined,
-      preview: URL.createObjectURL(file)
+  // Recipe handlers
+  const handleRecipeChange = (field: string, value: string | string[]): void => {
+    setRecipe(prev => ({
+      ...prev,
+      [field]: value
     }));
+  };
 
-    switch (type) {
-      case 'photos':
-        setPhotos(prev => [...prev, ...processedFiles]);
-        break;
-      case 'videos':
-        setVideos(prev => [...prev, ...processedFiles]);
-        break;
-      case 'documents':
-        setDocuments(prev => [...prev, ...processedFiles]);
-        break;
+  const toggleCategory = (category: RecipeCategory): void => {
+    setRecipe(prev => ({
+      ...prev,
+      category: prev.category.includes(category)
+        ? prev.category.filter(c => c !== category)
+        : [...prev.category, category]
+    }));
+  };
+
+  const toggleDietaryTag = (tag: DietaryTag): void => {
+    setRecipe(prev => ({
+      ...prev,
+      dietaryTags: prev.dietaryTags.includes(tag)
+        ? prev.dietaryTags.filter(t => t !== tag)
+        : [...prev.dietaryTags, tag]
+    }));
+  };
+
+  // Ingredient handlers
+  const handleIngredientChange = (index: number, field: keyof IngredientFormState, value: string): void => {
+    const updated = [...ingredients];
+    updated[index] = { ...updated[index], [field]: value };
+    setIngredients(updated);
+  };
+
+  const addIngredient = (): void => {
+    setIngredients([...ingredients, { ingredientName: '', quantity: '', unit: '', preparation: '', notes: '' }]);
+  };
+
+  const removeIngredient = (index: number): void => {
+    setIngredients(ingredients.filter((_, i) => i !== index));
+  };
+
+  // Direction handlers
+  const handleDirectionChange = (index: number, value: string): void => {
+    const updated = [...directions];
+    updated[index] = value;
+    setDirections(updated);
+  };
+
+  const addDirection = (): void => {
+    setDirections([...directions, '']);
+  };
+
+  const removeDirection = (index: number): void => {
+    setDirections(directions.filter((_, i) => i !== index));
+  };
+
+  // Image handler
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const processedFile: UploadedFile = {
+        id: Math.random().toString(36).substr(2, 9),
+        file,
+        name: file.name,
+        size: file.size,
+        preview: URL.createObjectURL(file)
+      };
+      setImage(processedFile);
     }
   };
 
-  const removeFile = (id: string, type: 'photos' | 'videos' | 'documents'): void => {
-    switch (type) {
-      case 'photos':
-        setPhotos(prev => prev.filter(file => file.id !== id));
-        break;
-      case 'videos':
-        setVideos(prev => prev.filter(file => file.id !== id));
-        break;
-      case 'documents':
-        setDocuments(prev => prev.filter(file => file.id !== id));
-        break;
+  const removeImage = (): void => {
+    if (image) {
+      URL.revokeObjectURL(image.preview);
+      setImage(null);
+    }
+  };
+
+  // Auto-calculate total time
+  const updateTotalTime = (): void => {
+    const prep = parseInt(recipe.prepTime) || 0;
+    const cook = parseInt(recipe.cookTime) || 0;
+    const total = prep + cook;
+    if (total > 0) {
+      setRecipe(prev => ({ ...prev, totalTime: total.toString() }));
     }
   };
 
   const handleSubmit = (): void => {
+    // Calculate total time if not set
+    const prep = parseInt(recipe.prepTime) || 0;
+    const cook = parseInt(recipe.cookTime) || 0;
+    const total = recipe.totalTime ? parseInt(recipe.totalTime) : prep + cook;
+
     // Transform form data to match API types
-    const customerData: CreateCustomerInput = {
-      name: customer.name,
-      email: customer.email,
-      phone: customer.phone,
-      address: customer.address,
-      policyNumber: customer.policyNumber,
-      insuranceCompany: customer.insuranceCompany
-    };
-
-    // Transform property data to match Property type
-    const propertyData: Partial<Property> = {
-      propertyType: claim.property.propertyType,
-      yearBuilt: parseInt(claim.property.yearBuilt),
-      roofingMaterial: claim.property.roofingMaterial,
-      roofAge: parseInt(claim.property.roofAge),
-      roofArea: parseFloat(claim.property.roofArea),
-      stories: parseInt(claim.property.stories),
-      lastInspectionDate: claim.property.lastInspectionDate || undefined
-    };
-
-    // Transform claim data
-    const claimData: Partial<CreateClaimInput> = {
-      claimNumber: claim.claimNumber,
-      dateOfLoss: claim.dateOfLoss,
-      dateReported: claim.dateReported,
-      description: claim.description,
-      priority: claim.priority,
-      property: propertyData as Property, // You'll need to add address and id for full Property
-      photos: photos.map(photo => ({
-        id: photo.id,
-        claimId: '', // This will be set by the server
-        url: '', // This will be set after upload
-        storageKey: '', // This will be set after upload
-        caption: photo.name,
-        takenAt: new Date().toISOString(),
+    const recipeData: Partial<CreateRecipeInput> = {
+      title: recipe.title,
+      servings: recipe.servings ? parseInt(recipe.servings) : undefined,
+      prepTime: recipe.prepTime ? parseInt(recipe.prepTime) : undefined,
+      cookTime: recipe.cookTime ? parseInt(recipe.cookTime) : undefined,
+      totalTime: total || undefined,
+      category: recipe.category.length > 0 ? recipe.category : undefined,
+      dietaryTags: recipe.dietaryTags.length > 0 ? recipe.dietaryTags : undefined,
+      link: recipe.link || undefined,
+      ingredients: ingredients
+        .filter(ing => ing.ingredientName.trim() !== '')
+        .map((ing, index) => ({
+          id: Math.random().toString(36).substr(2, 9),
+          recipeId: '', // Will be set by server
+          ingredientName: ing.ingredientName,
+          quantity: ing.quantity ? parseFloat(ing.quantity) : undefined,
+          unit: ing.unit || undefined,
+          preparation: ing.preparation || undefined,
+          notes: ing.notes || undefined,
+          sortOrder: index
+        })),
+      directions: directions.filter(dir => dir.trim() !== ''),
+      image: image ? {
+        id: image.id,
+        recipeId: '', // Will be set by server
+        url: '', // Will be set after upload
+        storageKey: '', // Will be set after upload
+        caption: recipe.title,
         uploadedAt: new Date().toISOString(),
-        uploadedBy: customer.email, // Assuming current user
+        uploadedBy: 'current-user', // Replace with actual user
         metadata: {
-          fileName: photo.file.name,
-          fileSize: photo.file.size,
-          width: 0, // These would come from actual image metadata
+          fileName: image.file.name,
+          fileSize: image.file.size,
+          width: 0, // Would come from actual image metadata
           height: 0,
-          format: photo.file.type.split('/')[1] || 'jpeg'
+          format: image.file.type.split('/')[1] || 'jpeg'
         }
-      })),
-      videos: videos.map(video => ({
-        id: video.id,
-        claimId: '', // This will be set by the server
-        url: '', // This will be set after upload
-        storageKey: '', // This will be set after upload
-        duration: 0, // This would come from actual video metadata
-        uploadedAt: new Date().toISOString(),
-        uploadedBy: customer.email,
-        metadata: {
-          fileName: video.file.name,
-          fileSize: video.file.size,
-          width: 0,
-          height: 0,
-          format: video.file.type.split('/')[1] || 'mp4',
-          bitrate: 0
-        }
-      })),
-      documents: documents.map(doc => ({
-        id: doc.id,
-        claimId: '', // This will be set by the server
-        url: '', // This will be set after upload
-        storageKey: '', // This will be set after upload
-        documentType: doc.documentType || DocumentType.OTHER,
-        fileName: doc.file.name,
-        fileSize: doc.file.size,
-        uploadedAt: new Date().toISOString(),
-        uploadedBy: customer.email
-      }))
+      } : undefined
     };
 
     const formData = {
-      customer: customerData,
-      claim: claimData,
-      files: {
-        photos,
-        videos,
-        documents
-      }
+      recipe: recipeData,
+      imageFile: image?.file
     };
     
     console.log('Form submission:', formData);
-    // Add your submission logic here
-    alert('Form submitted successfully! Check console for data.');
+    alert('Recipe submitted successfully! Check console for data.');
   };
 
   return {
-    customer,
-    claim,
-    files: { photos, videos, documents },
-    handleCustomerChange,
-    handleClaimChange,
-    handleFileUpload,
-    removeFile,
+    recipe,
+    ingredients,
+    directions,
+    image,
+    handleRecipeChange,
+    toggleCategory,
+    toggleDietaryTag,
+    handleIngredientChange,
+    addIngredient,
+    removeIngredient,
+    handleDirectionChange,
+    addDirection,
+    removeDirection,
+    handleImageUpload,
+    removeImage,
+    updateTotalTime,
     handleSubmit
   };
 }
