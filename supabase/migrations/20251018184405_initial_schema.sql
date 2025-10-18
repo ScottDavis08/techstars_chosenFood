@@ -154,3 +154,28 @@ CREATE POLICY "Users can delete cart items"
   ON cart_recipes FOR DELETE
   TO anon, authenticated
   USING (true);
+
+-- Add after the existing inventory policies:
+
+-- RLS Policies for inventory_items (management operations)
+CREATE POLICY "Anyone can insert inventory"
+  ON inventory_items FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "Anyone can update inventory"
+  ON inventory_items FOR UPDATE
+  TO anon, authenticated
+  USING (true)
+  WITH CHECK (true);
+
+CREATE POLICY "Anyone can delete inventory"
+  ON inventory_items FOR DELETE
+  TO anon, authenticated
+  USING (true);
+
+-- RLS Policies for recipes (management operations)
+CREATE POLICY "Anyone can insert recipes"
+  ON recipes FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
