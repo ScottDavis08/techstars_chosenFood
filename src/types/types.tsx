@@ -234,7 +234,6 @@ export interface RecipeSearchParams {
   dietaryTags?: DietaryTag[];
   ingredients?: string[];
   maxPrepTime?: number;
-  source?: RecipeSource;
   minRating?: number;
 }
 
