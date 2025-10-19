@@ -12,6 +12,7 @@ import { convertToExternalCartFormat } from '@/lib/cart-adapter';
 import { ShoppingCart, Utensils, Filter, Package } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/cart-context';
+import Image from 'next/image';
 
 export default function Home() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -128,10 +129,21 @@ export default function Home() {
 
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
-          <h1 className="text-3xl font-bold">Foodback Loop</h1>
-          <p className="text-muted-foreground mt-1">
-            Reducing food waste with smart choices
-          </p>
+          <div className="flex items-center gap-4">
+            <Image
+              src="/logoOnly.png"
+              alt="Foodback Loop Logo"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
+            <div>
+              <h1 className="text-3xl font-bold">Foodback Loop</h1>
+              <p className="text-muted-foreground mt-1">
+                Reducing food waste with smart choices
+              </p>
+            </div>
+          </div>
         </div>
       </header>
 
