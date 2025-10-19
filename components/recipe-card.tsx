@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { MatchedRecipe } from '@/lib/recipe-matcher';
+import { useCart } from '@/contexts/cart-context';
+import { useToast } from '@/hooks/use-toast';
 
 interface RecipeCardProps {
   recipe: MatchedRecipe;
@@ -16,8 +18,12 @@ export function RecipeCard({ recipe, onSwipe, style }: RecipeCardProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { addRecipe } = useCart();
+  const { toast } = useToast();
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
     setIsDragging(true);
     setStartPos({ x: e.clientX, y: e.clientY });
   };
@@ -29,6 +35,7 @@ export function RecipeCard({ recipe, onSwipe, style }: RecipeCardProps) {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging) return;
+    e.preventDefault();
     setDragOffset({
       x: e.clientX - startPos.x,
       y: e.clientY - startPos.y,
@@ -37,25 +44,95 @@ export function RecipeCard({ recipe, onSwipe, style }: RecipeCardProps) {
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return;
+    e.preventDefault();
     setDragOffset({
       x: e.touches[0].clientX - startPos.x,
       y: e.touches[0].clientY - startPos.y,
     });
   };
 
-  const handleEnd = () => {
-    if (!isDragging) return;
+  const handleEnd = async () => {
+    if (!isDragging || isProcessing) return;
+    
     setIsDragging(false);
+    const swipeThreshold = 100;
 
-    if (Math.abs(dragOffset.x) > 100) {
-      onSwipe(dragOffset.x > 0 ? 'right' : 'left');
+    if (Math.abs(dragOffset.x) > swipeThreshold) {
+      const direction = dragOffset.x > 0 ? 'right' : 'left';
+      
+      console.log('Swipe detected:', { direction, recipeId: recipe.id, dragOffset: dragOffset.x });
+
+      // If swiped right (liked), add to cart via context
+      if (direction === 'right') {
+        setIsProcessing(true);
+        try {
+          console.log('Adding recipe to cart:', recipe.id, recipe.title);
+          await addRecipe(recipe.id.toString());
+          
+          toast({
+            title: 'Recipe added! 🎉',
+            description: `${recipe.title} has been added to your cart.`,
+          });
+          console.log('Recipe successfully added to cart');
+        } catch (error) {
+          console.error('Failed to add recipe to cart:', error);
+          toast({
+            title: 'Error',
+            description: 'Failed to add recipe to cart. Please try again.',
+            variant: 'destructive',
+          });
+          // Don't proceed with swipe if there was an error
+          setDragOffset({ x: 0, y: 0 });
+          setIsProcessing(false);
+          return;
+        }
+        setIsProcessing(false);
+      }
+      
+      // Call the parent's onSwipe for UI management (removing card, etc.)
+      console.log('Calling onSwipe callback');
+      onSwipe(direction);
     }
 
     setDragOffset({ x: 0, y: 0 });
   };
 
+  // Add button handlers for debugging
+  const handleLikeButton = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log('Like button clicked for recipe:', recipe.id, recipe.title);
+    
+    try {
+      setIsProcessing(true);
+      await addRecipe(recipe.id.toString());
+      
+      toast({
+        title: 'Recipe added! 🎉',
+        description: `${recipe.title} has been added to your cart.`,
+      });
+      
+      // Call onSwipe to move to next card
+      onSwipe('right');
+    } catch (error) {
+      console.error('Failed to add recipe to cart:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add recipe to cart. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handlePassButton = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log('Pass button clicked for recipe:', recipe.id);
+    onSwipe('left');
+  };
+
   const rotation = isDragging ? (dragOffset.x / 20) : 0;
-  const opacity = isDragging ? 1 - Math.abs(dragOffset.x) / 500 : 1;
+  const opacity = isDragging ? Math.max(0.3, 1 - Math.abs(dragOffset.x) / 500) : 1;
 
   return (
     <Card
@@ -89,14 +166,14 @@ export function RecipeCard({ recipe, onSwipe, style }: RecipeCardProps) {
         </div>
 
         {isDragging && dragOffset.x > 50 && (
-          <div className="absolute top-8 right-8 bg-green-500 text-white px-6 py-3 rounded-lg font-bold text-xl transform rotate-12">
-            LIKE
+          <div className="absolute top-8 right-8 bg-green-500 text-white px-6 py-3 rounded-lg font-bold text-xl transform rotate-12 shadow-lg">
+            LIKE ❤️
           </div>
         )}
 
         {isDragging && dragOffset.x < -50 && (
-          <div className="absolute top-8 left-8 bg-red-500 text-white px-6 py-3 rounded-lg font-bold text-xl transform -rotate-12">
-            PASS
+          <div className="absolute top-8 left-8 bg-red-500 text-white px-6 py-3 rounded-lg font-bold text-xl transform -rotate-12 shadow-lg">
+            PASS ✕
           </div>
         )}
       </div>
@@ -109,7 +186,7 @@ export function RecipeCard({ recipe, onSwipe, style }: RecipeCardProps) {
           </Badge>
         </div>
 
-        <div className="space-y-3 max-h-64 overflow-y-auto">
+        <div className="space-y-3 max-h-48 overflow-y-auto mb-6">
           <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
             Ingredients ({recipe.totalIngredients})
           </h3>
@@ -127,6 +204,24 @@ export function RecipeCard({ recipe, onSwipe, style }: RecipeCardProps) {
               <span className="text-muted-foreground">{ingredient}</span>
             </div>
           ))}
+        </div>
+
+        {/* Add action buttons for easier interaction */}
+        <div className="flex gap-3 mt-4">
+          <button
+            onClick={handlePassButton}
+            className="flex-1 py-3 px-4 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg font-medium transition-colors"
+            disabled={isProcessing}
+          >
+            Pass ✕
+          </button>
+          <button
+            onClick={handleLikeButton}
+            className="flex-1 py-3 px-4 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg font-medium transition-colors disabled:bg-gray-200 disabled:text-gray-400"
+            disabled={isProcessing}
+          >
+            {isProcessing ? 'Adding...' : 'Like ❤️'}
+          </button>
         </div>
       </div>
     </Card>

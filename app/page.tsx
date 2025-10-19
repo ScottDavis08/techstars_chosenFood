@@ -21,7 +21,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('categories');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { toast } = useToast();
-  const { addItem, addRecipe, getTotalItems, getTotalRecipes } = useCart();
+  const { addItem, getTotalItems, getTotalRecipes } = useCart();
 
   useEffect(() => {
     loadData();
@@ -56,22 +56,6 @@ export default function Home() {
       title: 'Preferences saved!',
       description: `${categories.length} filter${categories.length !== 1 ? 's' : ''} applied to recipes.`,
     });
-  };
-
-  const handleRecipeLiked = async (recipeId: string) => {
-    try {
-      await addRecipe(recipeId);
-      toast({
-        title: 'Recipe added!',
-        description: 'Check your cart to review and adjust servings.',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to add recipe to cart. Please try again.',
-        variant: 'destructive',
-      });
-    }
   };
 
   const handleInventoryItemAdded = async (itemId: string, quantity: number) => {
@@ -163,7 +147,7 @@ export default function Home() {
             {matchedRecipes.length > 0 ? (
               <SwipeInterface
                 recipes={matchedRecipes}
-                onRecipeLiked={handleRecipeLiked}
+                // Remove onRecipeLiked prop since RecipeCard handles it directly
               />
             ) : (
               <div className="text-center py-12">

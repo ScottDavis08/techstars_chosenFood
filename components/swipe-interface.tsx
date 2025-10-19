@@ -11,10 +11,9 @@ import { getSessionId } from '@/lib/session';
 
 interface SwipeInterfaceProps {
   recipes: MatchedRecipe[];
-  onRecipeLiked: (recipe: MatchedRecipe) => void;
 }
 
-export function SwipeInterface({ recipes, onRecipeLiked }: SwipeInterfaceProps) {
+export function SwipeInterface({ recipes }: SwipeInterfaceProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [tolerance, setTolerance] = useState(70);
   const [filteredRecipes, setFilteredRecipes] = useState<MatchedRecipe[]>([]);
@@ -46,8 +45,6 @@ export function SwipeInterface({ recipes, onRecipeLiked }: SwipeInterfaceProps) 
         session_id: sessionId,
         servings_multiplier: 1.0,
       });
-
-      onRecipeLiked(currentRecipe);
     }
 
     setCurrentIndex(prev => prev + 1);
@@ -139,22 +136,6 @@ export function SwipeInterface({ recipes, onRecipeLiked }: SwipeInterfaceProps) 
             }}
           />
         ))}
-      </div>
-
-      <div className="flex gap-4">
-        <Button
-          variant="outline"
-          onClick={() => handleButtonSwipe('left')}
-          className="h-16 w-16 rounded-full p-0"
-        >
-          <X className="h-8 w-8 text-red-500" />
-        </Button>
-        <Button
-          onClick={() => handleButtonSwipe('right')}
-          className="h-16 w-16 rounded-full p-0 bg-green-500 hover:bg-green-600 text-white"
-        >
-          <Heart className="h-8 w-8 fill-current" />
-        </Button>
       </div>
     </div>
   );
