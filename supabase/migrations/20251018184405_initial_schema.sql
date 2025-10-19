@@ -154,3 +154,42 @@ CREATE POLICY "Users can delete cart items"
   ON cart_recipes FOR DELETE
   TO anon, authenticated
   USING (true);
+
+
+  -- Add cart_items table for individual inventory items
+CREATE TABLE IF NOT EXISTS cart_items (
+  id bigserial PRIMARY KEY,
+  session_id uuid NOT NULL,
+  inventory_item_id bigint NOT NULL REFERENCES inventory_items(id) ON DELETE CASCADE,
+  quantity integer NOT NULL DEFAULT 1,
+  created_at timestamptz DEFAULT now()
+);
+
+-- Create indexes for performance
+CREATE INDEX IF NOT EXISTS idx_cart_items_session ON cart_items(session_id);
+CREATE INDEX IF NOT EXISTS idx_cart_items_inventory ON cart_items(inventory_item_id);
+
+-- Enable Row Level Security
+ALTER TABLE cart_items ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies for cart_items (session-based)
+CREATE POLICY "Anyone can view cart items"
+  ON cart_items FOR SELECT
+  TO anon, authenticated
+  USING (true);
+
+CREATE POLICY "Anyone can create cart items"
+  ON cart_items FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "Anyone can update cart items"
+  ON cart_items FOR UPDATE
+  TO anon, authenticated
+  USING (true);
+
+CREATE POLICY "Anyone can delete cart items"
+  ON cart_items FOR DELETE
+  TO anon, authenticated
+  USING (true);
+  
