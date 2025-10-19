@@ -10,16 +10,26 @@ interface CategorySelectionProps {
 }
 
 export function CategorySelection({ onContinue }: CategorySelectionProps) {
+  const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
   const [selectedCuisine, setSelectedCuisine] = useState<string[]>([]);
   const [selectedMealType, setSelectedMealType] = useState<string[]>([]);
+
+  const allergenConditions = [
+    { id: 'peanut', label: 'Peanut ', icon: '🥜' },
+    { id: 'tree-nut', label: 'Tree Nut ', icon: '🌰' },
+    { id: 'shellfish', label: 'Shellfish ', icon: '🦐' },
+    { id: 'dairy', label: 'Dairy ', icon: '🥛' },
+    { id: 'egg', label: 'Egg ', icon: '🥚' },
+    { id: 'soy', label: 'Soy ', icon: '🫘' },
+    { id: 'wheat', label: 'Wheat ', icon: '🌾' },
+    { id: 'fish', label: 'Fish ', icon: '🐟' },
+  ];
 
   const dietaryPreferences = [
     { id: 'vegetarian', label: 'Vegetarian', icon: '🥗' },
     { id: 'vegan', label: 'Vegan', icon: '🌱' },
     { id: 'gluten-free', label: 'Gluten Free', icon: '🌾' },
-    { id: 'dairy-free', label: 'Dairy Free', icon: '🥛' },
-    { id: 'nut-free', label: 'Nut Free', icon: '🥜' },
     { id: 'low-carb', label: 'Low Carb', icon: '🥩' },
   ];
 
@@ -54,6 +64,7 @@ export function CategorySelection({ onContinue }: CategorySelectionProps) {
 
   const handleContinue = () => {
     const allSelected = [
+      ...selectedAllergens,
       ...selectedDietary,
       ...selectedCuisine,
       ...selectedMealType,
@@ -61,7 +72,7 @@ export function CategorySelection({ onContinue }: CategorySelectionProps) {
     onContinue(allSelected);
   };
 
-  const totalSelected = selectedDietary.length + selectedCuisine.length + selectedMealType.length;
+  const totalSelected = selectedAllergens.length + selectedDietary.length + selectedCuisine.length + selectedMealType.length;
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 space-y-6">
@@ -78,6 +89,43 @@ export function CategorySelection({ onContinue }: CategorySelectionProps) {
           </Badge>
         )}
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span className="text-2xl">⚠️</span>
+            Allergies
+          </CardTitle>
+          <CardDescription>
+            Select any allergies or health conditions that require dietary modifications
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {allergenConditions.map((condition) => (
+              <div
+                key={condition.id}
+                onClick={() => toggleCategory(condition.id, selectedAllergens, setSelectedAllergens)}
+                className={`
+                  flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all
+                  ${selectedAllergens.includes(condition.id)
+                    ? 'border-red-500 bg-red-50 shadow-md'
+                    : 'border-border hover:border-red-300 hover:bg-accent/50'
+                  }
+                `}
+              >
+                <Checkbox
+                  checked={selectedAllergens.includes(condition.id)}
+                  onCheckedChange={() => {}}
+                  className="pointer-events-none"
+                />
+                <span className="text-2xl">{condition.icon}</span>
+                <span className="font-medium">{condition.label}</span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -195,6 +243,7 @@ export function CategorySelection({ onContinue }: CategorySelectionProps) {
           variant="outline"
           size="lg"
           onClick={() => {
+            setSelectedAllergens([]);
             setSelectedDietary([]);
             setSelectedCuisine([]);
             setSelectedMealType([]);
@@ -215,3 +264,5 @@ export function CategorySelection({ onContinue }: CategorySelectionProps) {
     </div>
   );
 }
+
+export default CategorySelection;
