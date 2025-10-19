@@ -20,6 +20,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('categories');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [exportedItemCount, setExportedItemCount] = useState(0);
   const { toast } = useToast();
   const { addItem, getTotalItems, getTotalRecipes } = useCart();
 
@@ -83,6 +85,9 @@ export default function Home() {
       timestamp: new Date().toISOString(),
     });
 
+    setExportedItemCount(exportData.totalItems);
+    setShowSuccessModal(true);
+
     toast({
       title: 'Cart exported!',
       description: `${exportData.totalItems} ingredients ready for checkout.`,
@@ -104,6 +109,24 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-md mx-4 text-center">
+            <div className="text-6xl mb-4">✅</div>
+            <h2 className="text-3xl font-bold mb-2">Success!</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Your cart with {exportedItemCount} ingredient{exportedItemCount !== 1 ? 's' : ''} has been submitted successfully.
+            </p>
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
           <h1 className="text-3xl font-bold">Food Bank Recipe Matcher</h1>
@@ -147,7 +170,6 @@ export default function Home() {
             {matchedRecipes.length > 0 ? (
               <SwipeInterface
                 recipes={matchedRecipes}
-                // Remove onRecipeLiked prop since RecipeCard handles it directly
               />
             ) : (
               <div className="text-center py-12">

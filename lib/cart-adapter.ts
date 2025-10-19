@@ -15,10 +15,10 @@ export function convertToExternalCartFormat(exportData: ExportData): ExternalCar
   const items: ExternalCartItem[] = [];
 
   exportData.recipes.forEach((recipe) => {
-    recipe.ingredients.forEach((ingredient, index) => {
-      items.push({
-        item_id: `recipe_${recipe.recipeId}_ingredient_${index}`,
-        item_name: ingredient.name,
+  (recipe.ingredients ?? recipe.recipe?.ingredients ?? []).forEach((ingredient: { name: any; quantity: number; }, index: any) => {
+    items.push({
+      item_id: `recipe_${recipe.recipeId}_ingredient_${index}`,
+      item_name: ingredient.name,
         quantity: Math.ceil(ingredient.quantity),
         metadata: {
           recipe_id: recipe.recipeId,
