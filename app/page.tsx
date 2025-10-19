@@ -129,9 +129,9 @@ export default function Home() {
 
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
-          <h1 className="text-3xl font-bold">Food Bank Recipe Matcher</h1>
+          <h1 className="text-3xl font-bold">Foodback Loop</h1>
           <p className="text-muted-foreground mt-1">
-            Discover delicious recipes based on available ingredients
+            Reducing food waste with smart choices
           </p>
         </div>
       </header>

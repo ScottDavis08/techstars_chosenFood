@@ -7,8 +7,8 @@ import { Toaster } from '@/components/ui/toaster';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Food Bank Recipe Matcher',
-  description: 'Discover delicious recipes based on available ingredients',
+  title: 'Foodback Loop',
+  description: 'Reducing food waste with smart choices',
 };
 
 export default function RootLayout({
