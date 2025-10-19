@@ -73,6 +73,12 @@ export function InventoryInterface({ onItemAdded }: InventoryInterfaceProps) {
     const quantity = quantities[itemId];
     if (quantity > 0 && onItemAdded) {
       onItemAdded(itemId, quantity);
+      
+      // Reset the quantity counter to 0 after adding to cart
+      setQuantities(prev => ({
+        ...prev,
+        [itemId]: 0
+      }));
     }
   };
 
