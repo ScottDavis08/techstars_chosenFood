@@ -77,7 +77,6 @@ export function CategorySelection({ onContinue }: CategorySelectionProps) {
   return (
     <div className="w-full max-w-4xl mx-auto p-4 space-y-6">
       <div className="text-center mb-8">
-        <div className="text-6xl mb-4">🍽️</div>
         <h2 className="text-3xl font-bold mb-2">Choose Your Preferences</h2>
         <p className="text-muted-foreground">
           Select dietary needs, cuisine types, and meal preferences to find perfect recipes
