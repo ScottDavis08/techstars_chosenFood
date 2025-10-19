@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import { SwipeInterface } from '@/components/swipe-interface';
 import { CartInterface, ExportData } from '@/components/cart-interface';
+import { CategorySelection } from '@/components/categories_card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { supabase, Recipe, InventoryItem } from '@/lib/supabase';
 import { matchRecipesWithInventory, MatchedRecipe } from '@/lib/recipe-matcher';
 import { convertToExternalCartFormat } from '@/lib/cart-adapter';
-import { ShoppingCart, Utensils } from 'lucide-react';
+import { ShoppingCart, Utensils, Filter } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
@@ -16,7 +17,8 @@ export default function Home() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [matchedRecipes, setMatchedRecipes] = useState<MatchedRecipe[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('swipe');
+  const [activeTab, setActiveTab] = useState('categories');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -43,6 +45,15 @@ export default function Home() {
     }
 
     setLoading(false);
+  };
+
+  const handleCategoriesSelected = (categories: string[]) => {
+    setSelectedCategories(categories);
+    setActiveTab('swipe');
+    toast({
+      title: 'Preferences saved!',
+      description: `${categories.length} filter${categories.length !== 1 ? 's' : ''} applied to recipes.`,
+    });
   };
 
   const handleRecipeLiked = () => {
@@ -91,7 +102,11 @@ export default function Home() {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
+            <TabsTrigger value="categories" className="flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              Categories
+            </TabsTrigger>
             <TabsTrigger value="swipe" className="flex items-center gap-2">
               <Utensils className="h-4 w-4" />
               Recipes
@@ -101,6 +116,10 @@ export default function Home() {
               Cart
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="categories">
+            <CategorySelection onContinue={handleCategoriesSelected} />
+          </TabsContent>
 
           <TabsContent value="swipe">
             {matchedRecipes.length > 0 ? (
