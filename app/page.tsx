@@ -113,9 +113,8 @@ export default function Home() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-md mx-4 text-center">
             <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-3xl font-bold mb-2">Success!</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
-              Your cart with {exportedItemCount} ingredient{exportedItemCount !== 1 ? 's' : ''} has been submitted successfully.
+              Order number 53420 has been submitted successfully. Please proceed to parking spot #8.
             </p>
             <button
               onClick={() => setShowSuccessModal(false)}

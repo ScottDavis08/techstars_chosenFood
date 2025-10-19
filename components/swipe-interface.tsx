@@ -67,7 +67,7 @@ export function SwipeInterface({ recipes }: SwipeInterfaceProps) {
         <div className="w-full mb-6">
           <div className="flex items-center justify-between mb-2">
             <label className="text-sm font-medium">
-              Match Tolerance: {tolerance}%
+              Pantry Match: {tolerance}%
             </label>
             <span className="text-sm text-muted-foreground">
               {remainingCount} recipe{remainingCount !== 1 ? 's' : ''} remaining
@@ -109,7 +109,7 @@ export function SwipeInterface({ recipes }: SwipeInterfaceProps) {
       <div className="w-full mb-6">
         <div className="flex items-center justify-between mb-2">
           <label className="text-sm font-medium">
-            Match Tolerance: {tolerance}%
+            Pantry Matching: {tolerance}%
           </label>
           <span className="text-sm text-muted-foreground">
             {remainingCount} recipe{remainingCount !== 1 ? 's' : ''} remaining
