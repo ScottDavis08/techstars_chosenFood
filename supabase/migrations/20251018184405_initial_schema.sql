@@ -1,5 +1,5 @@
 /*
-  # Food Bank Recipe Matcher - Initial Schema
+  # Foodback Loop - Initial Schema
 
   ## Overview
   Database schema for matching food bank inventory with recipes and managing user recipe selections.

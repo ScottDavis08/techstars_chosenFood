@@ -1,4 +1,4 @@
-# Food Bank Recipe Matcher - Integration Guide
+# Foodback Loop - Integration Guide
 
 ## Overview
 
