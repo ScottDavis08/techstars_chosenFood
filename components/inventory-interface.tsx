@@ -5,14 +5,16 @@ import { supabase } from '@/lib/supabase';
 
 interface InventoryItem {
   id: string;
-  name: string;
-  description?: string;
-  price: number;
-  stock_quantity: number;
-  image_url?: string;
+  item_name: string;
+  item_id: string;
+  quantity: number;
 }
 
-export default function InventoryPage() {
+interface InventoryInterfaceProps {
+  onItemAdded?: (itemId: string, quantity: number) => void;
+}
+
+export function InventoryInterface({ onItemAdded }: InventoryInterfaceProps) {
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +30,8 @@ export default function InventoryPage() {
       const { data, error } = await supabase
         .from('inventory_items')
         .select('*')
-        .order('name');
+        .gt('quantity', 0) // Only show items with stock
+        .order('item_name');
 
       if (error) {
         throw error;
@@ -49,17 +52,13 @@ export default function InventoryPage() {
     }
   };
 
-  const updateQuantity = (itemId: string, newQuantity: number) => {
-    setQuantities(prev => ({
-      ...prev,
-      [itemId]: Math.max(0, newQuantity)
-    }));
-  };
-
   const incrementQuantity = (itemId: string) => {
+    const item = inventoryItems.find(i => i.id === itemId);
+    if (!item) return;
+
     setQuantities(prev => ({
       ...prev,
-      [itemId]: (prev[itemId] || 0) + 1
+      [itemId]: Math.min((prev[itemId] || 0) + 1, item.quantity)
     }));
   };
 
@@ -70,11 +69,19 @@ export default function InventoryPage() {
     }));
   };
 
+  const handleAddToCart = (itemId: string) => {
+    const quantity = quantities[itemId];
+    if (quantity > 0 && onItemAdded) {
+      onItemAdded(itemId, quantity);
+    }
+  };
+
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-center items-center h-64">
-          <div className="text-lg">Loading inventory...</div>
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <div className="text-4xl mb-4">📦</div>
+          <p className="text-muted-foreground">Loading inventory...</p>
         </div>
       </div>
     );
@@ -82,47 +89,43 @@ export default function InventoryPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          Error: {error}
-        </div>
+      <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
+        <p className="font-medium">Error loading inventory</p>
+        <p className="text-sm mt-1">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Inventory</h1>
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold mb-2">Browse Inventory</h2>
+        <p className="text-muted-foreground">
+          Add individual items to your cart
+        </p>
+      </div>
       
       {inventoryItems.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No inventory items available</p>
+          <div className="text-6xl mb-4">📦</div>
+          <h3 className="text-2xl font-bold mb-2">No items available</h3>
+          <p className="text-muted-foreground">
+            Check back later for new inventory
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {inventoryItems.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden border">
-              {item.image_url && (
-                <img 
-                  src={item.image_url} 
-                  alt={item.name}
-                  className="w-full h-48 object-cover"
-                />
-              )}
-              
+            <div key={item.id} className="bg-card rounded-lg shadow-sm overflow-hidden border border-border">
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
-                
-                {item.description && (
-                  <p className="text-gray-600 mb-3">{item.description}</p>
-                )}
+                <h3 className="text-lg font-semibold mb-3">{item.item_name}</h3>
                 
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg font-bold text-green-600">
-                    ${item.price.toFixed(2)}
+                  <span className="text-sm text-muted-foreground">
+                    Available: {item.quantity}
                   </span>
-                  <span className="text-sm text-gray-500">
-                    Stock: {item.stock_quantity}
+                  <span className="text-xs bg-muted px-2 py-1 rounded">
+                    ID: {item.item_id}
                   </span>
                 </div>
                 
@@ -130,7 +133,7 @@ export default function InventoryPage() {
                   <div className="flex items-center space-x-3">
                     <button
                       onClick={() => decrementQuantity(item.id)}
-                      className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
+                      className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors disabled:opacity-50"
                       disabled={quantities[item.id] === 0}
                     >
                       -
@@ -142,20 +145,17 @@ export default function InventoryPage() {
                     
                     <button
                       onClick={() => incrementQuantity(item.id)}
-                      className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
-                      disabled={quantities[item.id] >= item.stock_quantity}
+                      className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors disabled:opacity-50"
+                      disabled={quantities[item.id] >= item.quantity}
                     >
                       +
                     </button>
                   </div>
                   
                   <button
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                    className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={quantities[item.id] === 0}
-                    onClick={() => {
-                      // TODO: Add to cart functionality will be implemented later
-                      console.log(`Add ${quantities[item.id]} of ${item.name} to cart`);
-                    }}
+                    onClick={() => handleAddToCart(item.id)}
                   >
                     Add to Cart
                   </button>

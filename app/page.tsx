@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import { SwipeInterface } from '@/components/swipe-interface';
 import { CartInterface, ExportData } from '@/components/cart-interface';
 import { CategorySelection } from '@/components/categories_card';
+import { InventoryInterface } from '@/components/inventory-interface';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { supabase, Recipe, InventoryItem } from '@/lib/supabase';
 import { matchRecipesWithInventory, MatchedRecipe } from '@/lib/recipe-matcher';
 import { convertToExternalCartFormat } from '@/lib/cart-adapter';
-import { ShoppingCart, Utensils, Filter } from 'lucide-react';
+import { ShoppingCart, Utensils, Filter, Package } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useCart } from '@/contexts/cart-context';
 
 export default function Home() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -20,6 +21,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('categories');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { toast } = useToast();
+  const { addItem, addRecipe, getTotalItems, getTotalRecipes } = useCart();
 
   useEffect(() => {
     loadData();
@@ -56,11 +58,36 @@ export default function Home() {
     });
   };
 
-  const handleRecipeLiked = () => {
-    toast({
-      title: 'Recipe added!',
-      description: 'Check your cart to review and adjust servings.',
-    });
+  const handleRecipeLiked = async (recipeId: string) => {
+    try {
+      await addRecipe(recipeId);
+      toast({
+        title: 'Recipe added!',
+        description: 'Check your cart to review and adjust servings.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to add recipe to cart. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleInventoryItemAdded = async (itemId: string, quantity: number) => {
+    try {
+      await addItem(itemId, quantity);
+      toast({
+        title: 'Item added!',
+        description: `${quantity} item(s) added to your cart.`,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to add item to cart. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleExport = (exportData: ExportData) => {
@@ -89,6 +116,8 @@ export default function Home() {
     );
   }
 
+  const cartItemCount = getTotalItems() + getTotalRecipes();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -102,7 +131,7 @@ export default function Home() {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 mb-8">
             <TabsTrigger value="categories" className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               Categories
@@ -111,9 +140,18 @@ export default function Home() {
               <Utensils className="h-4 w-4" />
               Recipes
             </TabsTrigger>
-            <TabsTrigger value="cart" className="flex items-center gap-2">
+            <TabsTrigger value="inventory" className="flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              Inventory
+            </TabsTrigger>
+            <TabsTrigger value="cart" className="flex items-center gap-2 relative">
               <ShoppingCart className="h-4 w-4" />
               Cart
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 text-xs bg-primary text-primary-foreground rounded-full flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
             </TabsTrigger>
           </TabsList>
 
@@ -136,6 +174,10 @@ export default function Home() {
                 </p>
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="inventory">
+            <InventoryInterface onItemAdded={handleInventoryItemAdded} />
           </TabsContent>
 
           <TabsContent value="cart">
