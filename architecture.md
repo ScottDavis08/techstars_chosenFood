@@ -1,4 +1,4 @@
-# Food Bank Recipe Matcher - Architecture
+# Foodback Loop - Architecture
 
 ## Overview
 A Next.js application that helps food bank customers discover recipes based on available inventory and their dietary preferences, with a points-based allocation system for fair distribution.

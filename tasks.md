@@ -1,4 +1,4 @@
-# MVP Tasks - Food Bank Recipe Matcher
+# MVP Tasks - Foodback Loop
 
 ## Current Status ✅
 - [x] Basic Next.js app structure with TypeScript
